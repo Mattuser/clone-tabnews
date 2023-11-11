@@ -1,5 +1,5 @@
 function Home() {
-    return <h1>Alteração no arquivo...</h1>
+    return <h1>Alteração no arquivo... :D</h1>
 }
 
 export default Home;
