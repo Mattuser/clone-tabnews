@@ -4,7 +4,7 @@
   "description": "Implementação do tabnews",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run services:up && next dev",
+    "dev": "./init-dev.sh",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
