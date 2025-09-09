@@ -1,6 +1,6 @@
 import database from "infra/database.js";
 import retry from "async-retry";
-import migrator from "models/migrator.js"
+import migrator from "models/migrator.js";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -31,7 +31,7 @@ async function runPendingMigrations() {
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
-  runPendingMigrations
+  runPendingMigrations,
 };
 
 export default orchestrator;

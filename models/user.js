@@ -1,13 +1,11 @@
 import database from "infra/database.js";
 import { ValidationError, NotFoundError } from "infra/errors.js";
 
-
 async function findOneByUsername(username) {
   const userFound = await runSelectQuery(username);
   return userFound;
 
-
-   async function runSelectQuery(username) {
+  async function runSelectQuery(username) {
     const results = await database.query({
       text: ` 
         SELECT 
@@ -20,17 +18,16 @@ async function findOneByUsername(username) {
         ;`,
       values: [username],
     });
-    if(results.rowCount === 0) {
+    if (results.rowCount === 0) {
       throw new NotFoundError({
         message: "O username informado não foi encontrado no sistema.",
-        action: "Verifique se o username está digitado corretamente."
+        action: "Verifique se o username está digitado corretamente.",
       });
     }
 
     return results.rows[0];
   }
 }
-
 
 async function create(userInputValues) {
   await validateUniqueEmail(userInputValues.email);
@@ -47,16 +44,15 @@ async function create(userInputValues) {
           users
         WHERE LOWER(username) = LOWER($1)
         ;`,
-        values: [username]
+      values: [username],
     });
 
-    if(results.rowCount > 0) {
+    if (results.rowCount > 0) {
       throw new ValidationError({
         message: "o username informado já está sendo utilizado.",
-        action: "Utilize outro username para realizar o cadastro."
+        action: "Utilize outro username para realizar o cadastro.",
       });
     }
-
   }
 
   async function validateUniqueEmail(email) {
@@ -70,13 +66,12 @@ async function create(userInputValues) {
         ;`,
       values: [email],
     });
-    if(results.rowCount > 0) {
+    if (results.rowCount > 0) {
       throw new ValidationError({
         message: "o email informado já está sendo utilizado.",
-        action: "Utilize outro email para realizar o cadastro."
+        action: "Utilize outro email para realizar o cadastro.",
       });
     }
-
   }
 
   async function runInsertQuery(userInputValues) {
@@ -88,14 +83,16 @@ async function create(userInputValues) {
           ($1, $2, $3)
           RETURNING *
         ;`,
-      values: [userInputValues.username, userInputValues.email, userInputValues.password],
+      values: [
+        userInputValues.username,
+        userInputValues.email,
+        userInputValues.password,
+      ],
     });
 
     return results.rows[0];
   }
 }
-
-
 
 const user = { create, findOneByUsername };
 
