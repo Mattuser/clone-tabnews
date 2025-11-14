@@ -1,6 +1,7 @@
 import database from "infra/database.js";
 import password from "models/password.js";
 import { ValidationError, NotFoundError } from "infra/errors.js";
+import { hash } from "bcryptjs";
 
 async function findOneByUsername(username) {
   const userFound = await runSelectQuery(username);
@@ -38,13 +39,6 @@ async function create(userInputValues) {
   const newUser = await runInsertQuery(userInputValues);
   return newUser;
 
-  
-
-  async function hashPasswordInObject(userInputValues) {
-    const hashedPassword = await password.hash(userInputValues.password);
-    userInputValues.password = hashedPassword;
-  }
-
   async function runInsertQuery(userInputValues) {
     const results = await database.query({
       text: ` 
@@ -78,6 +72,10 @@ async function update(username, userInputValues) {
     if(userInputValues.email.toLowerCase() !== currentUser.email.toLowerCase()) {
       await validateUniqueEmail(userInputValues.email);
     }
+  }
+
+  if("password" in userInputValues) {
+    await hashPasswordInObject(userInputValues);
   }
 
   const userWithNewValues = { ...currentUser, ...userInputValues };
@@ -151,6 +149,13 @@ async function validateUniqueEmail(email) {
       });
     }
   }
+
+
+async function hashPasswordInObject(userInputValues) {
+  const hashedPassword = await password.hash(userInputValues.password);
+  userInputValues.password = hashedPassword;
+}
+
 
 const user = {
   create,
